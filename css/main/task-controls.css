@@ -16,7 +16,7 @@
 }
 
 .task-controls__search-input {
-    margin-bottom: 15px;
+    margin: 16px 0;
     padding: 5px;
     width: 320px;
 }
