@@ -1,0 +1,22 @@
+.task-controls {
+    text-align: center;
+}
+
+.task-controls__form-input {
+    padding: 2px 10px;
+}
+
+.task-controls__form-button {
+    background-color: #f44336;
+    color: #ffffff;
+    border: none;
+    border-radius: 3px;
+    margin-left: 5px;
+    padding: 6px 10px;
+}
+
+.task-controls__search-input {
+    margin-bottom: 15px;
+    padding: 5px;
+    width: 320px;
+}
