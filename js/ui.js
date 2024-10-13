@@ -16,6 +16,6 @@ function createButton(text, className, onClick) {
 }
 
 function updateTasksCount(count) {
-    const footer = document.querySelector('footer');
+    const footer = document.querySelector('.footer');
     footer.textContent = `Total tasks: ${count}`;
 }
