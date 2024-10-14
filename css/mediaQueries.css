@@ -1,0 +1,15 @@
+/* Mobile devices */
+@media screen and (max-width: 480px) {
+    .todo-table {
+        font-size: 0.75rem;
+    }
+
+    .task-controls__search-input {
+        width: 300px;
+    }
+
+    .todo-table__cell--buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
