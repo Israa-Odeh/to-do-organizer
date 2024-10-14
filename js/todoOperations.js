@@ -3,7 +3,9 @@ function addTaskToTable(task, todos) {
     const row = document.createElement('tr');
     row.classList.add('todo-table__row');
 
-    if (task.completed) row.classList.add('completed');
+    if (task.completed) {
+        row.classList.add('completed');
+    }
 
     row.appendChild(createCell(task.id, 'todo-table__cell'));
     row.appendChild(createCell(task.todo, 'todo-table__cell'));
@@ -13,9 +15,6 @@ function addTaskToTable(task, todos) {
     const buttonsCell = createCell('', 'todo-table__cell');
     const buttonsContainer = document.createElement('div');
     buttonsContainer.classList.add('todo-table__cell--buttons');
-    buttonsContainer.style.display = 'flex';
-    buttonsContainer.style.justifyContent = 'center';
-    buttonsContainer.style.alignItems = 'center';
 
     const deleteButton = createButton('Delete', 'todo-table__button todo-table__button--delete', () => handleDelete(row, tableBody, todos, task.id));
     const doneButton = createButton(task.completed ? 'Undo' : 'Done', 'todo-table__button todo-table__button--done', () => handleDone(row, task, doneButton, todos));
@@ -70,7 +69,11 @@ async function handleDone(row, task, doneButton, todos) {
 
     const updatedTodos = todos.map(todo => (todo.id === task.id ? task : todo));
     saveTodosToLocalStorage(updatedTodos);
-    await updateTodoInAPI(task.id, task);
+    
+    const isUpdated = await updateTodoInAPI(task.id, task);
+    if (!isUpdated) {
+        alert('Failed to update the TODO on the server.');
+    }
 }
 
 async function handleEdit(row, task) {
@@ -79,7 +82,7 @@ async function handleEdit(row, task) {
     const input = document.createElement('input');
     input.type = 'text';
     input.value = originalText;
-    input.classList.add('edit-input');
+    input.classList.add('editing-input');
 
     const saveChanges = async () => {
         const updatedText = input.value.trim();
@@ -91,12 +94,16 @@ async function handleEdit(row, task) {
 
         task.todo = updatedText;
         cell.textContent = updatedText;
-        await updateTodoInAPI(task.id, task);
+
+        const isUpdated = await updateTodoInAPI(task.id, task);
+        if (!isUpdated) {
+            alert('Failed to update the TODO on the server.');
+        }
+
         const todos = getTodosFromLocalStorage();
         saveTodosToLocalStorage(todos.map(todo => (todo.id === task.id ? task : todo)));
 
         cell.removeChild(input);
-        cell.classList.remove('editing');
     };
 
     cell.textContent = '';
@@ -104,13 +111,13 @@ async function handleEdit(row, task) {
     input.focus();
 
     input.addEventListener('keydown', event => {
-        if (event.key === 'Enter') saveChanges();
+        if (event.key === 'Enter') {
+            saveChanges();
+        }
     });
 
     input.addEventListener('blur', () => {
         cell.removeChild(input);
         cell.textContent = originalText;
     });
-
-    cell.classList.add('editing');
 }

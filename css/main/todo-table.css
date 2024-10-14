@@ -40,7 +40,15 @@
     border-right: none;
 }
 
+.editing-input {
+    padding: 2px 5px;
+    outline: none;
+}
+
 .todo-table__cell--buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     gap: 20px;
 }
 
