@@ -1,19 +1,4 @@
-let maxId = 0;
 
-async function init() {
-    let todos = getTodosFromLocalStorage();
-
-    if (todos.length === 0) {
-        todos = await fetchTodosFromAPI();
-        saveTodosToLocalStorage(todos);
-    }
-
-    maxId = todos.length > 0 ? Math.max(...todos.map(todo => todo.id)) : 0;
-
-    todos.forEach(task => addTaskToTable(task, todos));
-    handleSearch(todos);
-    updateTasksCount(todos.length);
-}
 
 document.querySelector('.task-controls__form').addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -29,18 +14,20 @@ document.querySelector('.task-controls__form').addEventListener('submit', async 
     }
 
     let todos = getTodosFromLocalStorage();
+
     maxId++;
 
     const newTodo = {
         id: maxId,
         todo: newTodoText,
         completed: false,
-        userId: Math.floor(Math.random() * 200)
+        userId: getCurrentUserId() // Use the existing or new user ID
     };
 
-    if (await addTodoToAPI(newTodo)) {
+    const isAdded = await addTodoToAPI(newTodo); // Optionally add to API
+    if (isAdded) {
         todos.push(newTodo);
-        saveTodosToLocalStorage(todos);
+        saveTodosToLocalStorage(todos); // Save new TODO to localStorage
         addTaskToTable(newTodo, todos);
         todoInput.value = '';
         updateTasksCount(todos.length);
@@ -48,5 +35,30 @@ document.querySelector('.task-controls__form').addEventListener('submit', async 
         alert('Failed to add the TODO to the server.');
     }
 });
+
+async function init() {
+    initializeUserId(); // Initialize or retrieve the user ID
+    let todos = getTodosFromLocalStorage();
+
+    if (todos.length === 0) {
+        // If no todos in localStorage, fetch from API and save to localStorage
+        todos = await fetchTodosFromAPI();
+        saveTodosToLocalStorage(todos);
+    }
+
+    // Set maxId based on existing todos
+    if (todos.length > 0) {
+        maxId = Math.max(...todos.map(todo => todo.id));
+    }
+
+    todos.forEach(task => {
+        addTaskToTable(task, todos);
+    });
+
+    // Initialize the search functionality
+    handleSearch(todos);
+
+    updateTasksCount(todos.length);
+}
 
 init();
