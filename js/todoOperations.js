@@ -69,7 +69,7 @@ async function handleDone(row, task, doneButton, todos) {
 
     const updatedTodos = todos.map(todo => (todo.id === task.id ? task : todo));
     saveTodosToLocalStorage(updatedTodos);
-    
+
     const isUpdated = await updateTodoInAPI(task);
     if (!isUpdated) {
         alert('Failed to update the TODO on the server.');
@@ -98,6 +98,8 @@ async function handleEdit(row, task) {
         const isUpdated = await updateTodoInAPI(task);
         if (!isUpdated) {
             alert('Failed to update the TODO on the server.');
+            cell.textContent = originalText;
+            return;
         }
 
         const todos = getTodosFromLocalStorage();
