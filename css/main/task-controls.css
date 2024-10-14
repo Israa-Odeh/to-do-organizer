@@ -24,3 +24,10 @@
     padding: 5px;
     width: 320px;
 }
+
+/* Mobile devices */
+@media screen and (max-width: 480px) {
+    .task-controls__search-input {
+        width: 300px;
+    }
+}

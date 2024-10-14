@@ -80,6 +80,18 @@
     color: #000000;
 }
 
+/* Mobile devices */
+@media screen and (max-width: 480px) {
+    .todo-table {
+        font-size: 0.75rem;
+    }
+
+    .todo-table__cell--buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
 /* Tablets (portrait) */
 @media screen and (min-width: 481px) and (max-width: 768px) {
     .todo-table {
