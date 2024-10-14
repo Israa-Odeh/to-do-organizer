@@ -21,11 +21,16 @@ async function fetchTodosFromAPI() {
 
 async function apiRequest(url, method, body) {
     try {
-        const response = await fetch(url, {
+        const options = {
             method,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body),
-        });
+        };
+
+        if (method !== 'DELETE') {
+            options.headers = { 'Content-Type': 'application/json' };
+            options.body = JSON.stringify(body);
+        }
+
+        const response = await fetch(url, options);
         return response.ok;
     } catch (error) {
         console.error(`Error during ${method} request:`, error);
@@ -34,13 +39,21 @@ async function apiRequest(url, method, body) {
 }
 
 async function addTodoToAPI(todo) {
-    return await apiRequest('https://dummyjson.com/todos/add', 'POST', todo);
+    const requestBody = {
+        todo: todo.todo,
+        completed: todo.completed,
+        userId: todo.userId,
+    };
+    return await apiRequest('https://dummyjson.com/todos/add', 'POST', requestBody);
 }
 
 async function deleteTodoFromAPI(todoId) {
     return await apiRequest(`https://dummyjson.com/todos/${todoId}`, 'DELETE');
 }
 
-async function updateTodoInAPI(todoId, updatedTodo) {
-    return await apiRequest(`https://dummyjson.com/todos/${todoId}`, 'PUT', updatedTodo);
+async function updateTodoInAPI(updatedTodo) {
+    const requestBody = {
+        completed: updatedTodo.completed,
+    };
+    return await apiRequest(`https://dummyjson.com/todos/${updatedTodo.id}`, 'PUT', requestBody);
 }
