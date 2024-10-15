@@ -51,9 +51,15 @@ async function deleteTodoFromAPI(todoId) {
     return await apiRequest(`https://dummyjson.com/todos/${todoId}`, 'DELETE');
 }
 
-async function updateTodoInAPI(updatedTodo) {
-    const requestBody = {
-        completed: updatedTodo.completed,
-    };
+async function updateTodoInAPI(updatedTodo, updateField) {
+    const requestBody = {};
+
+    if (updateField === 'completed') {
+        requestBody.completed = updatedTodo.completed;
+    } 
+    else if (updateField === 'todo') {
+        requestBody.todo = updatedTodo.todo;
+    }
+
     return await apiRequest(`https://dummyjson.com/todos/${updatedTodo.id}`, 'PUT', requestBody);
 }

@@ -15,6 +15,12 @@ function createButton(text, className, onClick) {
     return button;
 }
 
+function displayTodos(todos) {
+    const tableBody = document.querySelector('.todo-table__body');
+    tableBody.innerHTML = '';
+    todos.forEach(task => addTaskToTable(task, todos));
+}
+
 function updateTasksCount(count) {
     const footer = document.querySelector('.footer');
     footer.textContent = `Total tasks: ${count}`;

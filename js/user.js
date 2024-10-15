@@ -3,13 +3,13 @@ let currentUserId = null;
 function initializeUserId() {
     const storedUserId = localStorage.getItem('currentUserId');
     if (storedUserId) {
-        currentUserId = parseInt(storedUserId, 10); // Parse to integer
+        currentUserId = parseInt(storedUserId, 10);
     } else {
-        currentUserId = Math.floor(Math.random() * 200); // Simulate user ID generation
-        localStorage.setItem('currentUserId', currentUserId); // Store user ID in localStorage
+        currentUserId = Date.now() + Math.floor(Math.random() * 1000);
+        localStorage.setItem('currentUserId', currentUserId);
     }
 }
 
 function getCurrentUserId() {
-    return currentUserId; // Simply return the current user ID
+    return currentUserId;
 }

@@ -16,7 +16,7 @@ function addTaskToTable(task, todos) {
     const buttonsContainer = document.createElement('div');
     buttonsContainer.classList.add('todo-table__cell--buttons');
 
-    const deleteButton = createButton('Delete', 'todo-table__button todo-table__button--delete', () => handleDelete(row, tableBody, todos, task.id));
+    const deleteButton = createButton('Delete', 'todo-table__button todo-table__button--delete', () => handleDelete(row, task.id));
     const doneButton = createButton(task.completed ? 'Undo' : 'Done', 'todo-table__button todo-table__button--done', () => handleDone(row, task, doneButton, todos));
 
     buttonsContainer.append(deleteButton, doneButton);
@@ -28,31 +28,41 @@ function addTaskToTable(task, todos) {
     updateTasksCount(tableBody.children.length);
 }
 
-function handleSearch(todos) {
+function handleSearch() {
     const searchInput = document.querySelector('.task-controls__search-input');
-    const tableBody = document.querySelector('.todo-table__body');
 
     searchInput.addEventListener('input', () => {
         const query = searchInput.value.trim().toLowerCase();
-        tableBody.innerHTML = '';
-
         const filteredTodos = todos.filter(task => task.todo.toLowerCase().includes(query));
-        filteredTodos.forEach(task => addTaskToTable(task, todos));
+        displayTodos(filteredTodos);
         updateTasksCount(filteredTodos.length);
     });
 }
 
-async function handleDelete(row, tableBody, todos, taskId) {
+async function handleDelete(row, taskId) {
     if (!confirm('Are you sure you want to delete this task?')) return;
 
     const isDeleted = await deleteTodoFromAPI(taskId);
     if (isDeleted) {
         row.remove();
+
         const updatedTodos = todos.filter(todo => todo.id !== taskId);
         saveTodosToLocalStorage(updatedTodos);
-        updateTasksCount(tableBody.children.length);
-        handleSearch(updatedTodos);
-        document.querySelector('.task-controls__search-input').dispatchEvent(new Event('input'));
+
+        todos.length = 0;
+        todos.push(...updatedTodos);
+
+        const searchInput = document.querySelector('.task-controls__search-input');
+        const query = searchInput.value.trim().toLowerCase();
+
+        if (query) {
+            const displayedTodos = updatedTodos.filter(task => task.todo.toLowerCase().includes(query));
+            displayTodos(displayedTodos);
+            updateTasksCount(displayedTodos.length);
+        } else {
+            displayTodos(updatedTodos);
+            updateTasksCount(updatedTodos.length);
+        }
     } else {
         alert('Failed to delete the TODO from the server.');
     }
@@ -60,20 +70,16 @@ async function handleDelete(row, tableBody, todos, taskId) {
 
 async function handleDone(row, task, doneButton, todos) {
     task.completed = !task.completed;
+    const isUpdated = await updateTodoInAPI(task, 'completed');
+    if (!isUpdated) {
+        alert('Failed to update the TODO on the server.');
+        return;
+    }
     row.children[3].textContent = task.completed ? 'Completed' : 'Pending';
     row.classList.toggle('completed', task.completed);
     doneButton.textContent = task.completed ? 'Undo' : 'Done';
-
-    doneButton.style.backgroundColor = task.completed ? '#f2f2f2' : '';
-    doneButton.style.color = task.completed ? '#000000' : '';
-
     const updatedTodos = todos.map(todo => (todo.id === task.id ? task : todo));
     saveTodosToLocalStorage(updatedTodos);
-
-    const isUpdated = await updateTodoInAPI(task);
-    if (!isUpdated) {
-        alert('Failed to update the TODO on the server.');
-    }
 }
 
 async function handleEdit(row, task) {
@@ -93,18 +99,15 @@ async function handleEdit(row, task) {
         }
 
         task.todo = updatedText;
-        cell.textContent = updatedText;
 
-        const isUpdated = await updateTodoInAPI(task);
+        const isUpdated = await updateTodoInAPI(task, 'todo');
         if (!isUpdated) {
             alert('Failed to update the TODO on the server.');
-            cell.textContent = originalText;
             return;
         }
 
-        const todos = getTodosFromLocalStorage();
+        cell.textContent = updatedText;
         saveTodosToLocalStorage(todos.map(todo => (todo.id === task.id ? task : todo)));
-
         cell.removeChild(input);
     };
 
