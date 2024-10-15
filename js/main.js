@@ -33,7 +33,7 @@ document.querySelector('.task-controls__form').addEventListener('submit', async 
 
     const isAdded = await addTodoToAPI(newTodo);
     if (!isAdded) {
-        alert('Failed to add the TODO to the server. The user does not exist.');
+        console.log('Failed to add the TODO to the server. The user does not exist.');
     }
 });
 
