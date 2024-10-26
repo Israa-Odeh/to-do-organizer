@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Israa Odeh">
+    <meta name="description"
+        content="To-Do Organizer: A user-friendly web app to efficiently manage your tasks. Easily add, update, remove TODO items, and find tasks with our search feature.">
+    <title>To-Do Organizer</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/main/task-controls.css">
+    <link rel="stylesheet" href="css/main/todo-table.css">
+    <link rel="stylesheet" href="css/footer.css">
+
+    <script src="js/api.js" defer></script>
+    <script src="js/storage.js" defer></script>
+    <script src="js/ui.js" defer></script>
+    <script src="js/todoOperations.js" defer></script>
+    <script src="js/user.js" defer></script>
+    <script src="js/main.js" defer></script>
+</head>
+
+<body>
+    <header class="header">
+        <h1 class="header__title">TODO List</h1>
+    </header>
+
+    <main>
+        <div class="task-controls">
+            <form class="task-controls__form">
+                <input class="task-controls__form-input" type="text" name="task-description"
+                    placeholder="Add new task..." required>
+                <button class="task-controls__form-button" type="submit">Add</button>
+            </form>
+            <input class="task-controls__search-input" type="search" name="search" placeholder="Search tasks...">
+        </div>
+
+        <div class="todo-table-container">
+            <table class="todo-table">
+                <thead class="todo-table__head">
+                    <tr class="todo-table__row">
+                        <th class="todo-table__header-cell">ID</th>
+                        <th class="todo-table__header-cell">TODO Description</th>
+                        <th class="todo-table__header-cell">User ID</th>
+                        <th class="todo-table__header-cell">Status</th>
+                        <th class="todo-table__header-cell">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody class="todo-table__body">
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer class="footer">
+    </footer>
+</body>
+
+</html>
