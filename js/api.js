@@ -5,11 +5,11 @@ async function fetchTodosFromAPI() {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        const todosJson = await response.json();
-        const todos = todosJson.todos;
+        const { todos } = await response.json();
 
         if (!Array.isArray(todos)) {
-            throw new Error('Invalid response structure');
+            console.error('Invalid response structure');
+            return [];
         }
 
         return todos;
@@ -23,12 +23,11 @@ async function apiRequest(url, method, body) {
     try {
         const options = {
             method,
+            ...(method !== 'DELETE' ? {
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            } : {})
         };
-
-        if (method !== 'DELETE') {
-            options.headers = { 'Content-Type': 'application/json' };
-            options.body = JSON.stringify(body);
-        }
 
         const response = await fetch(url, options);
         return response.ok;
@@ -38,28 +37,28 @@ async function apiRequest(url, method, body) {
     }
 }
 
-async function addTodoToAPI(todo) {
+function addTodoToAPI(todo) {
     const requestBody = {
         todo: todo.todo,
         completed: todo.completed,
         userId: todo.userId,
     };
-    return await apiRequest('https://dummyjson.com/todos/add', 'POST', requestBody);
+    return apiRequest('https://dummyjson.com/todos/add', 'POST', requestBody);
 }
 
-async function deleteTodoFromAPI(todoId) {
-    return await apiRequest(`https://dummyjson.com/todos/${todoId}`, 'DELETE');
+function deleteTodoFromAPI(todoId) {
+    return apiRequest(`https://dummyjson.com/todos/${todoId}`, 'DELETE');
 }
 
-async function updateTodoInAPI(updatedTodo, updateField) {
+function updateTodoInAPI(updatedTodo, updateField) {
     const requestBody = {};
 
     if (updateField === 'completed') {
         requestBody.completed = updatedTodo.completed;
-    } 
+    }
     else if (updateField === 'todo') {
         requestBody.todo = updatedTodo.todo;
     }
 
-    return await apiRequest(`https://dummyjson.com/todos/${updatedTodo.id}`, 'PUT', requestBody);
+    return apiRequest(`https://dummyjson.com/todos/${updatedTodo.id}`, 'PUT', requestBody);
 }
