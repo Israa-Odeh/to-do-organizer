@@ -50,7 +50,7 @@ async function init() {
         displayTodos(todos);
     }
 
-    handleSearch();
+    initializeSearchListener();
     updateTasksCount(todos.length);
 }
 
